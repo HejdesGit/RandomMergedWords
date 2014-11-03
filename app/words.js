@@ -40,7 +40,7 @@ module.exports = function words(options) {
     var j = 1;
     for (var i = 0; (i < total); i++) {
         if (j === 1) {
-            results.push(word1())
+            results.push(word1());
             j++;
         }
         else if (j === 2) {
