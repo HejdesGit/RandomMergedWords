@@ -18,6 +18,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://hejde:johan@lennon.mongohq.com:10037/app31210075');
+var List = require('./app/models/list');
+
 var port = process.env.PORT || 9000; 		// set our port
 
 // ROUTES FOR OUR API
@@ -30,6 +34,36 @@ router.get('/', function (req, res) {
 });
 
 // more routes for our API will happen here
+
+// on routes that end in /listname
+// ----------------------------------------------------
+router.route('/list')
+
+    // create a listname (accessed at POST http://localhost:8080/listname)
+    .post(function(req, res) {
+
+        var list= new List();		// create a new instance of the ListName model
+        list.name = req.body.name;  // set the list name (comes from the request)
+
+        list.save(function(err) {
+            if (err)
+                res.send(err);
+
+            res.json({ message: 'List created!' });
+        });
+
+
+    })
+
+    // get all the list (accessed at GET http://localhost:9000/api/list)
+    .get(function(req, res) {
+        List.find(function(err, list) {
+            if (err)
+                res.send(err);
+
+            res.json(list);
+        });
+    });
 
 // on routes that end in /word
 // ----------------------------------------------------
