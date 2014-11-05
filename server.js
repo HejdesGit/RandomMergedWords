@@ -42,14 +42,14 @@ router.route('/list')
     // create a listname (accessed at POST http://localhost:8080/listname)
     .post(function(req, res) {
 
-        var list= new List();		// create a new instance of the ListName model
+        var list = new List();		// create a new instance of the ListName model
         list.name = req.body.name;  // set the list name (comes from the request)
 
         list.save(function(err) {
             if (err)
                 res.send(err);
 
-            res.json({ message: 'List created!' });
+            res.json({ message: 'List created: ' + list._id });
         });
 
 
@@ -64,6 +64,34 @@ router.route('/list')
             res.json(list);
         });
     });
+
+router.route('/list/:list_id')
+// update the bear with this id (accessed at PUT http://localhost:8080/api/bears/:bear_id)
+.put(function(req, res) {
+
+        // use our bear model to find the bear we want
+        List.findById(req.params.list_id, function(err, list) {
+
+        if (err)
+            res.send(err);
+
+            var resi = req.body.videoID.split(" ");
+
+            for (var i in resi) {
+                var videoID = resi[i];
+                list.videoID.push(videoID);
+            }
+
+            // save the bear
+            list.save(function(err) {
+            if (err)
+                res.send(err);
+
+            res.json({ message: 'List updated with ' + req.body.videoID });
+        });
+
+    });
+});
 
 // on routes that end in /word
 // ----------------------------------------------------
