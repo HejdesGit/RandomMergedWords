@@ -176,6 +176,6 @@ swaggy(app, function (err) {
         return console.log(err);
     }
     app.listen(port);
-    console.log('Magic happens on port ' + port);
+    console.log('Magic happens on port: ' + port);
     console.log("REST API available at http://localhost:3001/api/docs");
 });
