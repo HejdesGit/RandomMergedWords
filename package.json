@@ -4,7 +4,7 @@
   "description": "Api",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha",
     "start": "node server.js"
   },
   "author": "",
@@ -20,6 +20,9 @@
     "mongoose": "~3.8.18"
   },
   "devDependencies": {
-    "nodemon": "~1.2.1"
+    "nodemon": "~1.2.1",
+    "supertest": "~0.14.0",
+    "mocha": "~2.0.1",
+    "should-http": "0.0.2"
   }
 }

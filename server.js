@@ -5,19 +5,19 @@
 
 // call the packages we need
 var express = require('express'),		// call express
-app = express(), 				// define our app using express
-bodyParser = require('body-parser'),
-randomWords = require('./app/words'),
-cors = require('cors'),
-dataTalker = require('./app/data.talker'),
-swaggy = require("swaggy");
+    app = express(), 				// define our app using express
+    bodyParser = require('body-parser'),
+    randomWords = require('./app/words'),
+    cors = require('cors'),
+    dataTalker = require('./app/data.talker'),
+    swaggy = require("swaggy");
 var winston = require('winston'),
     Papertrail = require('winston-papertrail').Papertrail;
 
 var logger,
     consoleLogger = new winston.transports.Console({
         level: 'debug',
-        timestamp: function() {
+        timestamp: function () {
             return new Date().toString();
         },
         colorize: true
@@ -28,16 +28,16 @@ var logger,
         hostname: 'web-01',
         level: 'debug',
         colorize: true,
-        logFormat: function(level, message) {
+        logFormat: function (level, message) {
             return '[' + level + '] ' + message;
         }
     });
 
-ptTransport.on('error', function(err) {
+ptTransport.on('error', function (err) {
     logger && logger.error(err);
 });
 
-ptTransport.on('connect', function(message) {
+ptTransport.on('connect', function (message) {
     logger && logger.info(message);
 });
 
@@ -91,24 +91,24 @@ router.get('/', function (req, res) {
 router.route('/list')
 
     // create a listname (accessed at POST http://localhost:8080/listname)
-    .post(function(req, res) {
+    .post(function (req, res) {
 
         var list = new List();		// create a new instance of the ListName model
         list.name = req.body.name;  // set the list name (comes from the request)
 
-        list.save(function(err) {
+        list.save(function (err) {
             if (err)
                 res.send(err);
 
-            res.json({ message: 'List created: ' + list._id });
+            res.json({message: 'List created: ' + list._id});
         });
 
 
     })
 
     // get all the list (accessed at GET http://localhost:9000/api/list)
-    .get(function(req, res) {
-        List.find(function(err, list) {
+    .get(function (req, res) {
+        List.find(function (err, list) {
             if (err)
                 res.send(err);
 
@@ -118,38 +118,40 @@ router.route('/list')
 
 router.route('/list/:list_id')
 // update the bear with this id (accessed at PUT http://localhost:8080/api/bears/:bear_id)
-.put(function(req, res) {
+    .put(function (req, res) {
 
         // use our bear model to find the bear we want
-        List.findById(req.params.list_id, function(err, list) {
+        List.findById(req.params.list_id, function (err, list) {
 
-        if (err)
-            res.send(err);
-
-            var resi = req.body.videoID.split(" ");
-
-            for (var i in resi) {
-                var videoID = resi[i];
-                list.videoID.push(videoID);
-            }
-
-            // save the bear
-            list.save(function(err) {
             if (err)
                 res.send(err);
 
-            res.json({ message: 'List updated with ' + req.body.videoID });
-        });
 
+            list.videoID.push(req.body.videoID);
+            //var resi = req.body.videoID.split(" ");
+
+            //for (var i in resi) {
+            //   var videoID = resi[i];
+            //  list.videoID.push(videoID);
+            //}
+
+            // save the bear
+            list.save(function (err) {
+                if (err)
+                    res.send(err);
+
+                res.json({answer: list, inserted:req.body.videoID,  message: 'List updated with ' + req.body.videoID});
+            });
+
+        });
     });
-});
 
 // on routes that end in /word
 // ----------------------------------------------------
 router.route('/word')
     .get(function (req, res) {
-        var word = randomWords({ exactly: 3, join: '' });
-        dataTalker.CreateListName(word, function(answer) {
+        var word = randomWords({exactly: 3, join: ''});
+        dataTalker.CreateListName(word, function (answer) {
             res.json(answer);
         });
     });
@@ -158,12 +160,12 @@ router.route('/word')
 // ----------------------------------------------------
 router.route('/getlistname/:name?')
     .get(function (req, res) {
-        if(typeof req.params.name === 'undefined'){
-            res.json({error:true, answer: "Du måste skriva in ett list namn"});
-        }else{
-        dataTalker.GetListName(req.params.name, function(answer) {
-            res.json(answer);
-        });
+        if (typeof req.params.name === 'undefined') {
+            res.json({error: true, answer: "Du måste skriva in ett list namn"});
+        } else {
+            dataTalker.GetListName(req.params.name, function (answer) {
+                res.json(answer);
+            });
         }
     });
 
@@ -176,6 +178,7 @@ swaggy(app, function (err) {
         return console.log(err);
     }
     app.listen(port);
+    console.log(app.get('env'));
     console.log('Magic happens on port: ' + port);
     console.log("REST API available at http://localhost:3001/api/docs");
 });
