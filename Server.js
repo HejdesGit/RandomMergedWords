@@ -14,7 +14,8 @@ var express = require('express'),
     DB = require('./app/data.talker.mongo'),
     swaggy = require("swaggy"),
     mongoose = require('mongoose'),
-    logService = require('winston'),
+    //lgg = require('./app/logging'),
+    //logService = require('winston'),
     Playlist = require('./app/models/playlist'),
     routes = require('./Routes');
 
@@ -33,12 +34,7 @@ var port = process.env.PORT || 9001; // set our port
 var router = express.Router(); // get an instance of the express Router
 
 // connect to our database
-mongoose.connect('mongodb://' + DB.config.user + ':' + DB.config.password + '@' + DB.config.server + ':' + DB.config.port + '/' + DB.config.app + '', function (err) {
-    if (err) {
-        logService.logger.error(new Date().getTime() + ' Database error: ', {error: err});
-    }
-});
-
+DB.connect();
 
 
 // REGISTER OUR ROUTES -------------------------------
@@ -49,7 +45,7 @@ routes.setup(router);
 
 swaggy(app, function (err) {
     if (err) {
-        logService.logger.error(new Date().getTime() + ' /api swaggy failed : ', {error: err});
+        //logService.logger.error(new Date().getTime() + ' /api swaggy failed : ', {error: err});
         return console.log(err);
     }
     app.listen(port);

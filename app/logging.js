@@ -55,8 +55,6 @@ module.exports = (function () {
         ]
     });
 
-    logger.info('this is my message ' + new Date().getTime());
-
     var logger,
         consoleLogger = new winston.transports.Console({
             level: 'debug',
