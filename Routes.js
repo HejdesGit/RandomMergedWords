@@ -1,7 +1,7 @@
 'use strict';
 
 var Playlist = require('./app/models/playlist'),
-    logService = require('winston'),
+    //logService = require('winston'),
     randomWords = require('./app/words');
 
 function setup(router) {
@@ -16,7 +16,8 @@ function setup(router) {
             });
             playlist.save(function (err) {
                 if (err) {
-                    logService.logger.error(new Date().getTime() + ' Playlist post failed: ', {error: err});
+                    console.log(err);
+                    //logService.logger.error(new Date().getTime() + ' Playlist post failed: ', {error: err});
                     res.json(400, {
                         error: err.message
                     });
@@ -29,13 +30,14 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.find(function (err, playlists) {
                 if (err) {
-                    logService.logger.error(new Date().getTime() + ' Playlist get failed: ', {error: err});
+                    console.log(err);
+                    //logService.logger.error(new Date().getTime() + ' Playlist get failed: ', {error: err});
                     res.json(400, {
                         error: err.message
                     });
                 }
 
-                res.json({ playlist: playlists});
+                res.json({playlist: playlists});
             });
         });
 
@@ -47,6 +49,7 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.findOne({'name': req.params.playlist_name}, function (err, playlist) {
                 if (err) {
+                    console.log(err);
                     //logService.logger.error(new Date().getTime() + ' playlist/name get failed: ', {error: err});
                     res.json(400, {
                         error: err.message
@@ -65,48 +68,50 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
-                    logService.logger.error(new Date().getTime() + ' /playlist/:playlist_id get failed: ', {error: err});
+                    console.log(err);
+                    //logService.logger.error(new Date().getTime() + ' /playlist/:playlist_id get failed: ', {error: err});
                 }
                 res.json({playlist: playlist});
             });
-
-//        Playlist.findOne({ 'name': req.params.playlist_id }, 'id', function (err, playlist) {
-//            if (err) {
-//                console.log(err)
-//            }
-//            res.json({ message: playlist.id, playlist:playlist });
-//        })
         })
 
         // update the playlist with this id
         .put(function (req, res) {
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
-                    logService.logger.error(new Date().getTime() + ' /playlist/:playlist_id put failed: ', {error: err});
+                    console.log(err);
+                    //logService.logger.error(new Date().getTime() + ' /playlist/:playlist_id put failed: ', {error: err});
                 }
-                playlist.videoId.push(req.body.videoId);
-
+                if (req.body.remove === 'true') {
+                    collection.update(
+                        { _id: req.params.playlist_id },
+                        { $pull: { videoId: req.body.videoId } }
+                    );
+                } else {
+                    playlist.videoId.push(req.body.videoId);
+                }
                 playlist.save(function (err) {
                     if (err) {
-                        logService.logger.error(err + new Date().getTime());
+                        console.log(err);
+                        //logService.logger.error(err + new Date().getTime());
                     }
                     res.json({playlist: playlist});
                 });
 
             });
-        });
+        })
 
-//    // delete the playlist with this id
-//    .delete(function(req, res) {
-//        Playlist.remove({
-//            _id: req.params.playlist_id
-//        }, function(err, playlist) {
-//            if (err)
-//                res.send(err);
-//
-//            res.json({ message: 'Successfully deleted' });
-//        });
-//    });
+        // delete the playlist with this id
+        .delete(function (req, res) {
+            Playlist.remove({
+                _id: req.params.playlist_id
+            }, function (err, playlist) {
+                if (err)
+                    res.send(err);
+
+                res.json({message: 'Successfully deleted'});
+            });
+        });
 
 // on routes that end in /getlistnames
 // ----------------------------------------------------

@@ -13,7 +13,7 @@ var express = require('express'),
  	DB = require('./app/data.talker.mongo'),
     swaggy = require("swaggy"),
     //logService = require('./app/logging'),
-    routes = require('./app/routes');
+    routes = require('./Routes');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
