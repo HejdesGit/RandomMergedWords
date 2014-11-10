@@ -1,7 +1,6 @@
 //TODO: Refactor
 //TODO: Break out routes
 //TODO: Generate unique word
-//TODO: Config.js port, host.
 
 // BASE SETUP
 // =============================================================================
@@ -11,13 +10,10 @@ var express = require('express'),
     app = express(),
     bodyParser = require('body-parser'),
     cors = require('cors'),
-    DB = require('./app/data.talker.mongo'),
+ 	DB = require('./app/data.talker.mongo'),
     swaggy = require("swaggy"),
-    mongoose = require('mongoose'),
-    //lgg = require('./app/logging'),
-    //logService = require('winston'),
-    Playlist = require('./app/models/playlist'),
-    routes = require('./Routes');
+    //logService = require('./app/logging'),
+    routes = require('./app/routes');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -33,22 +29,31 @@ var port = process.env.PORT || 9001; // set our port
 // =============================================================================
 var router = express.Router(); // get an instance of the express Router
 
-// connect to our database
-DB.connect();
+
+if (app.settings.env === 'test') {
+    //TODO: break out.
+    //NODE_ENV=test node server.js
+    var mongoose = require('mongoose'),
+        configDebug = require('./test/config-debug');
+    mongoose.connect(configDebug.mongodb, function (err) {
+        console.log(err);
+    });
+} else {
+    //Connect to database.
+ 	DB.connect();
+}
 
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
-
 routes.setup(router);
 
 swaggy(app, function (err) {
     if (err) {
-        //logService.logger.error(new Date().getTime() + ' /api swaggy failed : ', {error: err});
+        logService.logger.error(new Date().getTime() + ' /api swaggy failed : ', {error: err});
         return console.log(err);
     }
     app.listen(port);
     console.log('Magic happens on port ' + port);
-    console.log("REST API available at http://localhost:3001/api/docs");
 });
