@@ -6,3 +6,4 @@ module.exports = {
         'url': 'http://localhost:9001/api'
     }
 };
+//NODE_ENV=test node Server.js

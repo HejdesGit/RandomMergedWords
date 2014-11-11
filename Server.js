@@ -33,7 +33,7 @@ if (app.settings.env === 'test') {
     //TODO: break out.
     //NODE_ENV=test node server.js
     var mongoose = require('mongoose'),
-        configDebug = require('./test/config-debug');
+        configDebug = require('./Config-debug');
     mongoose.connect(configDebug.mongodb, function (err) {
         logService.error(new Date().getTime() + 'mongoose connect error', {error: err});
     });
