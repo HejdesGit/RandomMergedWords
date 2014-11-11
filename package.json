@@ -15,7 +15,6 @@
     "body-parser": "~1.9.2",
     "cors": "~2.5.0",
     "swaggy": "~1.0.3",
-    "winston-papertrail": "~0.1.5",
     "winston": "~0.8.3",
     "mongoose": "~3.8.18"
   },
@@ -23,6 +22,7 @@
     "nodemon": "~1.2.1",
     "supertest": "~0.14.0",
     "mocha": "~2.0.1",
-    "should-http": "0.0.2"
+    "should-http": "0.0.2",
+    "node-inspector": "~0.7.4"
   }
 }

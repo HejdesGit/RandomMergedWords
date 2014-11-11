@@ -1,7 +1,7 @@
 'use strict';
 
 var Playlist = require('./app/models/playlist'),
-    winston = require('winston'),
+    logService = require('winston'),
     randomWords = require('./app/words');
 
 function setup(router) {
@@ -14,7 +14,7 @@ function setup(router) {
             });
             playlist.save(function (err) {
                 if (err) {
-                    winston.error(new Date().getTime() + ' Playlist post failed: ', {error: err});
+                    logService.error(new Date().getTime() + ' Playlist post failed: ', {error: err});
                     res.json(400, {
                         error: err.message
                     });
@@ -27,7 +27,7 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.find(function (err, playlists) {
                 if (err) {
-                    winston.error(new Date().getTime() + ' Playlist get failed: ', {error: err});
+                    logService.error(new Date().getTime() + ' Playlist get failed: ', {error: err});
                     res.json(400, {
                         error: err.message
                     });
@@ -45,7 +45,7 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.findOne({'name': req.params.playlist_name}, function (err, playlist) {
                 if (err) {
-                    winston.error(new Date().getTime() + ' playlist/name get failed: ', {error: err});
+                    logService.error(new Date().getTime() + ' playlist/name get failed: ', {error: err});
                     res.json(400, {
                         error: err.message
                     });
@@ -63,7 +63,7 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
-                    winston.error(new Date().getTime() + ' /playlist/:playlist_id get failed: ', {error: err});
+                    logService.error(new Date().getTime() + ' /playlist/:playlist_id get failed: ', {error: err});
                 }
                 res.json({playlist: playlist});
             });
@@ -76,7 +76,7 @@ function setup(router) {
                     {_id: req.params.playlist_id},
                     {$pull: {videoId: req.body.videoId}}, function (err, result) {
                         if (err) {
-                            winston.error(new Date().getTime() + ' /playlist/:playlist_id put removed failed: ', {error: err});
+                            logService.error(new Date().getTime() + ' /playlist/:playlist_id put removed failed: ', {error: err});
                         }
                     })
             } else {
@@ -84,13 +84,13 @@ function setup(router) {
                     {_id: req.params.playlist_id},
                     {$push: {videoId: req.body.videoId}}, function (err, result) {
                         if (err) {
-                            winston.error(new Date().getTime() + ' /playlist/:playlist_id put add failed: ', {error: err});
+                            logService.error(new Date().getTime() + ' /playlist/:playlist_id put add failed: ', {error: err});
                         }
                     })
             }
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
-                    winston.error(new Date().getTime() + ' /playlist/:playlist_id removed failed: ', {error: err});
+                    logService.error(new Date().getTime() + ' /playlist/:playlist_id removed failed: ', {error: err});
                 }
                 res.json({playlist: playlist});
             });
@@ -103,7 +103,7 @@ function setup(router) {
             }, function (err) {
                 if (err)
                 {
-                    winston.error(new Date().getTime() + ' /playlist/:playlist_id put failed: ', {error: err});
+                    logService.error(new Date().getTime() + ' /playlist/:playlist_id put failed: ', {error: err});
                 }
                 res.json({message: 'Successfully deleted'});
             });
