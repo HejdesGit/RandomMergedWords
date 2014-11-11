@@ -47,12 +47,11 @@ if (app.settings.env === 'test') {
 app.use('/api', router);
 routes.setup(router);
 
-
 swaggy(app, function (err) {
     if (err) {
         logService.error(new Date().getTime() + ' /api swaggy failed : ', {error: err});
         return console.log(err);
     }
     app.listen(port);
-    logService.info('Magic happens on port ' + port);
+    logService.info("Express server listening on port %d in %s mode", port, app.settings.env);
 });
