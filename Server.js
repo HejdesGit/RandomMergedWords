@@ -10,9 +10,10 @@ var express = require('express'),
     app = express(),
     bodyParser = require('body-parser'),
     cors = require('cors'),
- 	DB = require('./app/data.talker.mongo'),
+    DB = require('./app/data.talker.mongo'),
     swaggy = require("swaggy"),
-    //logService = require('./app/logging'),
+    winston = require('winston'),
+//logService = require('./app/logging'),
     routes = require('./Routes');
 
 // configure app to use bodyParser()
@@ -29,6 +30,15 @@ var port = process.env.PORT || 9001; // set our port
 // =============================================================================
 var router = express.Router(); // get an instance of the express Router
 
+var myCustomLevels = {
+    colors: {
+        info: 'yellow',
+        error: 'red'
+    }
+};
+
+winston.addColors(myCustomLevels.colors);
+
 
 if (app.settings.env === 'test') {
     //TODO: break out.
@@ -36,24 +46,27 @@ if (app.settings.env === 'test') {
     var mongoose = require('mongoose'),
         configDebug = require('./test/config-debug');
     mongoose.connect(configDebug.mongodb, function (err) {
-        console.log(err);
+        winston.error(new Date().getTime() + 'mongoose connect error', {error: err});
     });
 } else {
     //Connect to database.
- 	DB.connect();
+    DB.connect();
 }
 
+winston.error("testing error");
+winston.info("testing info");
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
 routes.setup(router);
 
+
 swaggy(app, function (err) {
     if (err) {
-        logService.logger.error(new Date().getTime() + ' /api swaggy failed : ', {error: err});
+        winston.error(new Date().getTime() + ' /api swaggy failed : ', {error: err});
         return console.log(err);
     }
     app.listen(port);
-    console.log('Magic happens on port ' + port);
+    winston.info('Magic happens on port ' + port);
 });

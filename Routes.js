@@ -1,23 +1,20 @@
 'use strict';
 
 var Playlist = require('./app/models/playlist'),
-//logService = require('winston'),
+    winston = require('winston'),
     randomWords = require('./app/words');
 
 function setup(router) {
     router.route('/playlist')
-
         // create a playlist (accessed at POST http://domain:port/playlist)
         .post(function (req, res) {
             var word = randomWords({exactly: 3, join: ''});
-
             var playlist = new Playlist({
                 name: word
             });
             playlist.save(function (err) {
                 if (err) {
-                    console.log(err);
-                    //logService.logger.error(new Date().getTime() + ' Playlist post failed: ', {error: err});
+                    winston.error(new Date().getTime() + ' Playlist post failed: ', {error: err});
                     res.json(400, {
                         error: err.message
                     });
@@ -30,8 +27,7 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.find(function (err, playlists) {
                 if (err) {
-                    console.log(err);
-                    //logService.logger.error(new Date().getTime() + ' Playlist get failed: ', {error: err});
+                    winston.error(new Date().getTime() + ' Playlist get failed: ', {error: err});
                     res.json(400, {
                         error: err.message
                     });
@@ -49,8 +45,7 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.findOne({'name': req.params.playlist_name}, function (err, playlist) {
                 if (err) {
-                    console.log(err);
-                    //logService.logger.error(new Date().getTime() + ' playlist/name get failed: ', {error: err});
+                    winston.error(new Date().getTime() + ' playlist/name get failed: ', {error: err});
                     res.json(400, {
                         error: err.message
                     });
@@ -68,8 +63,7 @@ function setup(router) {
         .get(function (req, res) {
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
-                    console.log(err);
-                    //logService.logger.error(new Date().getTime() + ' /playlist/:playlist_id get failed: ', {error: err});
+                    winston.error(new Date().getTime() + ' /playlist/:playlist_id get failed: ', {error: err});
                 }
                 res.json({playlist: playlist});
             });
@@ -81,20 +75,22 @@ function setup(router) {
                 Playlist.update(
                     {_id: req.params.playlist_id},
                     {$pull: {videoId: req.body.videoId}}, function (err, result) {
-                        if (err) console.log(err);
-                        console.log(result);
+                        if (err) {
+                            winston.error(new Date().getTime() + ' /playlist/:playlist_id put removed failed: ', {error: err});
+                        }
                     })
             } else {
                 Playlist.update(
                     {_id: req.params.playlist_id},
                     {$push: {videoId: req.body.videoId}}, function (err, result) {
-                        if (err) console.log(err);
-                        console.log(result);
+                        if (err) {
+                            winston.error(new Date().getTime() + ' /playlist/:playlist_id put add failed: ', {error: err});
+                        }
                     })
             }
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
-                    //logService.logger.error(new Date().getTime() + ' /playlist/:playlist_id put failed: ', {error: err});
+                    winston.error(new Date().getTime() + ' /playlist/:playlist_id removed failed: ', {error: err});
                 }
                 res.json({playlist: playlist});
             });
@@ -104,25 +100,22 @@ function setup(router) {
         .delete(function (req, res) {
             Playlist.remove({
                 _id: req.params.playlist_id
-            }, function (err, playlist) {
+            }, function (err) {
                 if (err)
-                    res.send(err);
-
+                {
+                    winston.error(new Date().getTime() + ' /playlist/:playlist_id put failed: ', {error: err});
+                }
                 res.json({message: 'Successfully deleted'});
             });
         });
 
 // on routes that end in /getlistnames
 // ----------------------------------------------------
-    router.route('/getlistname/:name?')
+    router.route('/getlistname/:name')
         .get(function (req, res) {
-            if (typeof req.params.name === 'undefined') {
-                res.json({error: true, answer: "Du måste skriva in ett list namn"});
-            } else {
-                dataTalker.GetListName(req.params.name, function (answer) {
-                    res.json(answer);
-                });
-            }
+            Playlist.find({ 'name': req.params.name }, function (err, docs) {
+                res.json({playlist:docs});
+            });
         });
 }
 
