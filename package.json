@@ -5,7 +5,8 @@
   "main": "Server.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha",
-    "start": "node Server.js"
+    "start": "node Server.js",
+    "debug": "node-debug Server.js"
   },
   "author": "",
   "license": "BSD-2-Clause",

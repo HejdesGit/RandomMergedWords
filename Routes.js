@@ -1,7 +1,7 @@
 'use strict';
 
 var Playlist = require('./app/models/playlist'),
-    //logService = require('winston'),
+//logService = require('winston'),
     randomWords = require('./app/words');
 
 function setup(router) {
@@ -77,25 +77,26 @@ function setup(router) {
 
         // update the playlist with this id
         .put(function (req, res) {
+            if (req.body.remove === 'true') {
+                Playlist.update(
+                    {_id: req.params.playlist_id},
+                    {$pull: {videoId: req.body.videoId}}, function (err, result) {
+                        if (err) console.log(err);
+                        console.log(result);
+                    })
+            } else {
+                Playlist.update(
+                    {_id: req.params.playlist_id},
+                    {$push: {videoId: req.body.videoId}}, function (err, result) {
+                        if (err) console.log(err);
+                        console.log(result);
+                    })
+            }
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
                     //logService.logger.error(new Date().getTime() + ' /playlist/:playlist_id put failed: ', {error: err});
                 }
-                if (req.body.remove === 'true') {
-                    collection.update(
-                        { _id: req.params.playlist_id },
-                        { $pull: { videoId: req.body.videoId } }
-                    );
-                } else {
-                    playlist.videoId.push(req.body.videoId);
-                }
-                playlist.save(function (err) {
-                    if (err) {
-                        //logService.logger.error(err + new Date().getTime());
-                    }
-                    res.json({playlist: playlist});
-                });
-
+                res.json({playlist: playlist});
             });
         })
 
