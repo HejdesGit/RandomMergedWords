@@ -79,7 +79,6 @@ function setup(router) {
         .put(function (req, res) {
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
-                    console.log(err);
                     //logService.logger.error(new Date().getTime() + ' /playlist/:playlist_id put failed: ', {error: err});
                 }
                 if (req.body.remove === 'true') {
@@ -92,7 +91,6 @@ function setup(router) {
                 }
                 playlist.save(function (err) {
                     if (err) {
-                        console.log(err);
                         //logService.logger.error(err + new Date().getTime());
                     }
                     res.json({playlist: playlist});

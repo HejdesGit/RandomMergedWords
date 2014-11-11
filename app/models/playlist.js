@@ -1,10 +1,10 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var mongoose     = require('mongoose');
+var Schema       = mongoose.Schema;
 
-var ListSchema = new Schema({
-    name: { type: String, required: true },
-    date: { type: Date, default: Date.now },
-    videoID: [Number]
+var PlaylistSchema   = new Schema({
+    name: String,
+    created: { type: Date, default: Date.now },
+    videoId:   [Number]
 });
 
-module.exports = mongoose.model('List', ListSchema);
+module.exports = mongoose.model('Playlist', PlaylistSchema);
