@@ -5,8 +5,11 @@
   "main": "Server.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha",
+    "env-test": "NODE_ENV=test node Server.js",
     "start": "node Server.js",
-    "debug": "node-debug Server.js"
+    "debug": "node-debug Server.js",
+    "nodemon": "nodemon Server.js",
+    "coverage": "istanbul cover _mocha -- --ui bdd -R spec -t 5000"
   },
   "author": "",
   "license": "BSD-2-Clause",
@@ -16,13 +19,17 @@
     "cors": "~2.5.0",
     "swaggy": "~1.0.3",
     "winston": "~0.8.3",
-    "mongoose": "~3.8.18"
+    "mongoose": "~3.8.18",
+    "mongoose-validator": "~1.0.2",
+    "express-validator": "~2.6.0"
   },
   "devDependencies": {
     "nodemon": "~1.2.1",
     "supertest": "~0.14.0",
     "mocha": "~2.0.1",
     "should-http": "0.0.2",
-    "node-inspector": "~0.7.4"
+    "node-inspector": "~0.7.4",
+    "blanket": "~1.1.6",
+    "util": "~0.10.3"
   }
 }

@@ -1,25 +1,15 @@
-var should = require('should-http');
-var assert = require('assert');
-var request = require('supertest');
-var mongoose = require('mongoose');
-var winston = require('winston');
+var should = require('should-http'),
+    assert = require('assert'),
+    request = require('supertest'),
+    mongoose = require('mongoose'),
+    configDebug = require('../Config-debug');
+
+
 
 
 describe('Routing', function () {
-    //var url = 'http://hejdes.herokuapp.com/api';
-    var url = 'http://localhost:9001/api';
+    var url = configDebug.api.local;
     var PlaylistId;
-    // within before() you can run all the operations that are needed to setup your tests. In this case
-    // I want to create a connection with the database, and when I'm done, I call done().
-    before(function (done) {
-
-        // In our tests we use the test db
-        mongoose.connect('mongodb://localhost:27017/hejde', function (err) {
-            console.log(err);
-        });
-        done();
-    });
-
 
     it('should post a lists', function (done) {
         request(url)
