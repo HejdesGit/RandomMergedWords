@@ -1,7 +1,6 @@
 'use strict';
 
-var playlistHandler = require('./app/handlers/playlist'),
-    util = require('util');
+var playlistHandler = require('./app/handlers/playlist');
 
 function setup(router) {
     router.route('/playlist')
@@ -19,12 +18,7 @@ function setup(router) {
     router.route('/playlist/name/:playlist_name')
         // get the playlist with that name
         .get(function (req, res) {
-            req.checkParams('playlist_name', 'Invalid urlparam').notEmpty().isAlpha();
-            var errors = req.validationErrors();
-            if (errors) {
-                res.status(400).json('There have been validation errors: ' + util.inspect(errors));
-                return;
-            }
+            playlistHandler.getPlaylistName(req, res);
         });
 
 // on routes that end in /playlist/:playlist_id

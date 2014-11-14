@@ -2,16 +2,14 @@
 
 var Playlist = require('../models/playlist'),
     logService = require('winston'),
-    randomWords = require('../words');
+    randomWords = require('../words'),
+    util = require('util');
 
 module.exports = (function () {
     var getPlaylist = function (req, res) {
             Playlist.find(function (err, playlists) {
                 if (err) {
                     resError(res, err, ' Playlist get failed: ');
-                    res.json(400, {
-                        error: err.message
-                    });
                 }
 
                 res.json({playlist: playlists});
@@ -25,25 +23,23 @@ module.exports = (function () {
             playlist.save(function (err) {
                 if (err) {
                     resError(res, err, ' Playlist post failed: ');
-                    res.json(400, {
-                        error: err.message
-                    });
                 }
                 res.json({playlist: playlist});
             });
         },
         getPlaylistName = function (req, res) {
+            req.checkParams('playlist_name', 'Invalid urlparam').notEmpty().isAlpha();
+            validateErrors(req, res, 'validating playlist_name failed.');
             Playlist.find({'name': req.params.playlist_name}, function (err, playlist) {
                 if (err) {
                     resError(res, err, ' /playlist/name/:playlist_name? get failed: ');
-                    res.json(400, {
-                        error: err
-                    });
                 }
                 res.json({playlist: playlist});
             });
         },
         getPlaylistId = function (req, res) {
+            req.checkParams('playlist_id', 'Invalid urlparam').notEmpty().isAlphanumeric();
+            validateErrors(req, res, 'validating playlist_id failed.');
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
                 if (err) {
                     resError(res, err, ' /playlist/:playlist_id get failed: ');
@@ -52,6 +48,9 @@ module.exports = (function () {
             });
         },
         updatePlaylist = function (req, res) {
+            req.checkParams('playlist_id', 'Invalid urlparam').notEmpty().isAlphanumeric();
+            req.checkBody('videoId', 'Invalid urlparam').notEmpty().isInt();
+            validateErrors(req, res, 'updating failed.');
             if (req.body.remove === 'true') {
                 Playlist.update(
                     {_id: req.params.playlist_id},
@@ -86,9 +85,16 @@ module.exports = (function () {
                 res.json({message: 'Successfully deleted'});
             });
         },
-        resError = function (res, error, message) {
-            logService.error(new Date() + message, {error: error});
-            res.json(400, {
+        validateErrors = function (req, res, message) {
+            var errors = req.validationErrors();
+            if (errors) {
+                resError(res, util.inspect(errors), message);
+                return;
+            }
+        },
+        resError = function (res, err, message) {
+            logService.error(new Date() + ' | ' + message + ' |', {error: err});
+            res.status(400).json({
                 error: err
             });
         };
