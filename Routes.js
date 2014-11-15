@@ -16,13 +16,6 @@ module.exports = (function () {
                 playlistHandler.getPlaylist(req, res);
             });
 
-// on routes that end in /playlist/:playlist_name
-// ----------------------------------------------------
-        router.route('/playlist/name/:playlist_name')
-            // get the playlist with that name
-            .get(function (req, res) {
-                playlistHandler.getPlaylistByName(req, res);
-            });
 
 // on routes that end in /playlist/:playlist_id
 // ----------------------------------------------------
@@ -38,6 +31,14 @@ module.exports = (function () {
             // delete the playlist with this id
             .delete(function (req, res) {
                 playlistHandler.deletePlaylist(req, res);
+            });
+
+// on routes that end in /playlist/:playlist_name
+// ----------------------------------------------------
+        router.route('/playlist/name/:playlist_name')
+            // get the playlist with that name
+            .get(function (req, res) {
+                playlistHandler.getPlaylistByName(req, res);
             });
     };
     return {setup: setup};
