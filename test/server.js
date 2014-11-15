@@ -1,10 +1,10 @@
+//TODO: Mock
+
 var should = require('should-http'),
     assert = require('assert'),
     request = require('supertest'),
     mongoose = require('mongoose'),
     configDebug = require('../Config-debug');
-
-
 
 
 describe('Routing', function () {
@@ -14,9 +14,10 @@ describe('Routing', function () {
     it('should post a lists', function (done) {
         request(url)
             .post('/playlist')
+            .expect(200)
             .end(function (err, res) {
                 if (err) {
-                    throw err;
+                    return done(err);
                 }
                 // this is should.js syntax, very clear
                 res.should.have.status(200);
@@ -29,11 +30,11 @@ describe('Routing', function () {
 
         request(url)
             .get('/playlist')
-
+            .expect(200)
             // end handles the response
             .end(function (err, res) {
                 if (err) {
-                    throw err;
+                    return done(err);
                 }
                 // this is should.js syntax, very clear
                 res.should.have.status(200);
@@ -50,10 +51,10 @@ describe('Routing', function () {
         request(url)
             .put('/playlist/' + PlaylistId)
             .send(body)
-            .expect(200) //Status code
+            .expect(200)
             .end(function (err, res) {
                 if (err) {
-                    throw err;
+                    return done(err);
                 }
 
                 res.body.playlist.should.have.property('_id');
@@ -70,10 +71,10 @@ describe('Routing', function () {
         request(url)
             .put('/playlist/' + PlaylistId)
             .send(body)
-            .expect(200) //Status code
+            .expect(200)
             .end(function (err, res) {
                 if (err) {
-                    throw err;
+                    return done(err);
                 }
                 // Should.js fluent syntax applied
                 res.body.playlist.should.have.property('_id');
@@ -81,5 +82,6 @@ describe('Routing', function () {
                 done();
             });
     });
+    
 
 });

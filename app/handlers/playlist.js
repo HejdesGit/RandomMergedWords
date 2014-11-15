@@ -11,7 +11,6 @@ module.exports = (function () {
                 if (err) {
                     resError(res, err, ' Playlist get failed: ');
                 }
-
                 res.json({playlist: playlists});
             });
         },
@@ -27,7 +26,7 @@ module.exports = (function () {
                 res.json({playlist: playlist});
             });
         },
-        getPlaylistName = function (req, res) {
+        getPlaylistByName = function (req, res) {
             req.checkParams('playlist_name', 'Invalid urlparam').notEmpty().isAlpha();
             validateErrors(req, res, 'validating playlist_name failed.');
             Playlist.find({'name': req.params.playlist_name}, function (err, playlist) {
@@ -37,7 +36,7 @@ module.exports = (function () {
                 res.json({playlist: playlist});
             });
         },
-        getPlaylistId = function (req, res) {
+        getPlaylistById = function (req, res) {
             req.checkParams('playlist_id', 'Invalid urlparam').notEmpty().isAlphanumeric();
             validateErrors(req, res, 'validating playlist_id failed.');
             Playlist.findById(req.params.playlist_id, function (err, playlist) {
@@ -48,8 +47,8 @@ module.exports = (function () {
             });
         },
         updatePlaylist = function (req, res) {
-            req.checkParams('playlist_id', 'Invalid urlparam').notEmpty().isAlphanumeric();
-            req.checkBody('videoId', 'Invalid urlparam').notEmpty().isInt();
+            req.checkParams('playlist_id', 'Invalid urlparam for updatePlaylist').notEmpty().isAlphanumeric();
+            req.checkBody('videoId', 'Invalid bodyparms for updatePlaylist').notEmpty().isInt();
             validateErrors(req, res, 'updating failed.');
             if (req.body.remove === 'true') {
                 Playlist.update(
@@ -92,6 +91,7 @@ module.exports = (function () {
                 return;
             }
         },
+    //TODO: refactor move.
         resError = function (res, err, message) {
             logService.error(new Date() + ' | ' + message + ' |', {error: err});
             res.status(400).json({
@@ -101,8 +101,8 @@ module.exports = (function () {
     return {
         getPlaylist: getPlaylist,
         postPlaylist: postPlaylist,
-        getPlaylistName: getPlaylistName,
-        getPlaylistId: getPlaylistId,
+        getPlaylistByName: getPlaylistByName,
+        getPlaylistById: getPlaylistById,
         updatePlaylist: updatePlaylist,
         deletePlaylist: deletePlaylist
     };

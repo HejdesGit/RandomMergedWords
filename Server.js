@@ -1,11 +1,6 @@
-//TODO: Refactor
-//TODO: Break out routes
-//TODO: Generate unique word
-
 // BASE SETUP
 // =============================================================================
 
-// call the packages we need
 var express = require('express'),
     app = express(),
     bodyParser = require('body-parser'),
@@ -21,8 +16,9 @@ var express = require('express'),
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressValidator([]));
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/test'));
 
+
+//TODO: Setup right url for cors.
 //Using cross origin resource sharing
 app.use(cors());
 
