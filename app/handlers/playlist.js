@@ -1,3 +1,5 @@
+//TODO: incorporate update field for playlist
+
 'use strict';
 
 var Playlist = require('../models/playlist'),

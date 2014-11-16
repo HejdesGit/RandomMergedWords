@@ -8,37 +8,36 @@ module.exports = (function () {
 // ----------------------------------------------------
         router.route('/playlist')
             // create a playlist
-            .post(function (req, res) {
-                playlistHandler.postPlaylist(req, res);
+            .post(function (request, response) {
+                playlistHandler.postPlaylist(request, response);
             })
             // get all the playlist
-            .get(function (req, res) {
-                playlistHandler.getPlaylist(req, res);
+            .get(function (request, response) {
+                playlistHandler.getPlaylist(request, response);
             });
-
 
 // on routes that end in /playlist/:playlist_id
 // ----------------------------------------------------
         router.route('/playlist/:playlist_id')
             // get the playlist with that id
-            .get(function (req, res) {
-                playlistHandler.getPlaylistById(req, res);
+            .get(function (request, response) {
+                playlistHandler.getPlaylistById(request, response);
             })
             // update the playlist with this id
-            .put(function (req, res) {
-                playlistHandler.updatePlaylist(req, res);
+            .put(function (request, response) {
+                playlistHandler.updatePlaylist(request, response);
             })
             // delete the playlist with this id
-            .delete(function (req, res) {
-                playlistHandler.deletePlaylist(req, res);
+            .delete(function (request, response) {
+                playlistHandler.deletePlaylist(request, response);
             });
 
 // on routes that end in /playlist/:playlist_name
 // ----------------------------------------------------
         router.route('/playlist/name/:playlist_name')
             // get the playlist with that name
-            .get(function (req, res) {
-                playlistHandler.getPlaylistByName(req, res);
+            .get(function (request, response) {
+                playlistHandler.getPlaylistByName(request, response);
             });
     };
     return {setup: setup};

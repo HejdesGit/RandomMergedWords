@@ -1,3 +1,5 @@
+//TODO: IMPLEMENT LOGGING.
+'use strict';
 var winston = require('winston'),
     Papertrail = require('winston-papertrail').Papertrail;
 
